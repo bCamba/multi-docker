@@ -9,7 +9,7 @@ before_install:
 script:
   - docker run -e CI=true camba/react-test npm test --coverage
 
-after_sucess:
+after_success:
   - docker build -t camba/multi-client ./client
   - docker build -t camba/multi-nginx ./nginx
   - docker build -t camba/multi-server ./server
