@@ -1,0 +1,21 @@
+language: generic
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t camba/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true camba/react-test npm test --coverage
+
+after_sucess:
+  - docker build -t camba/multi-client ./client
+  - docker build -t camba/multi-nginx ./nginx
+  - docker build -t camba/multi-server ./server
+  - docker build -t camba/multi-worker ./worker
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  - docker push camba/multi-client
+  - docker push camba/multi-nginx
+  - docker push camba/multi-server
+  - docker push camba/multi-worker
